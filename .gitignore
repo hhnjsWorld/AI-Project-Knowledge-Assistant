@@ -1,5 +1,42 @@
-node_modules
-package-lock.json
-config.local.js
-*.md
-!README.md
+# ======================
+# Env（绝对不能提交）
+# ======================
+.env
+.env.local
+.env.*.local
+
+# ======================
+# Dependencies
+# ======================
+node_modules/
+
+# ======================
+# Build outputs
+# ======================
+dist/
+build/
+.next/
+out/
+
+# ======================
+# Logs
+# ======================
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# Editor / OS
+# ======================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+.DS_Store
+Thumbs.db
+
+# ======================
+# Supabase CLI（你现在不用）
+# ======================
+supabase/
