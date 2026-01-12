@@ -2,8 +2,9 @@ export interface Project {
   id: string;
   name: string;
   description: string;
-  lastUpdated: string;
-  memberCount: number;
+  last_updated: string; // Mapped from DB
+  member_count: number; // Mapped from DB
+  user_id: string;
 }
 
 export interface Document {
@@ -11,8 +12,9 @@ export interface Document {
   name: string;
   status: 'uploading' | 'processing' | 'searchable';
   source: string;
-  uploadDate: string;
-  projectId?: string;
+  upload_date: string; // Mapped from DB 
+  project_id?: string;
+  user_id: string;
 }
 
 export interface Message {
