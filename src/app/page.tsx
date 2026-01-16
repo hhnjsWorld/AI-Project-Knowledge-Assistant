@@ -1,21 +1,28 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
   const router = useRouter();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.push('/dashboard');
-      } else {
-        router.push('/login');
-      }
-    });
-  }, [router]);
+    if (loading) {
+      return;
+    }
 
-  return <div className="min-h-screen flex items-center justify-center">跳转中...</div>;
+    if (user) {
+      router.replace("/dashboard");
+    } else {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      跳转中...
+    </div>
+  );
 }

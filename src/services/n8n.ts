@@ -26,7 +26,8 @@ export const n8nService = {
    * @param payload - The data to send to the workflow
    */
   async invokeWorkflow<T>(workflowId: string, payload: Record<string, unknown>): Promise<AIWorkflowResponse<T>> {
-    const url = config.ai.n8nWebhookUrl ? `${config.ai.n8nWebhookUrl}/${workflowId}` : '';
+    // USE PROXY: Call local Next.js API route instead of direct n8n URL to avoid CORS
+    const url = `/api/n8n/${workflowId}`;
 
     if (!url) {
        console.warn('[n8n] Webhook URL is not configured.');

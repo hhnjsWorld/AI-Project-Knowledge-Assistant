@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
-import { Document } from '@/types';
 import { Upload, FileText, CheckCircle, Loader, AlertCircle } from 'lucide-react';
+import { useKnowledgeDocuments } from '@/hooks/useKnowledgeDocuments';
 
 const statusConfig = {
   uploading: {
@@ -27,50 +25,16 @@ const statusConfig = {
 };
 
 export default function KnowledgePage() {
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchDocuments = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('documents')
-        .select('*')
-        .order('upload_date', { ascending: false });
-
-      if (error) throw error;
-      setDocuments(data || []);
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDocuments();
-  }, []);
+  const { documents, loading, addDocument } = useKnowledgeDocuments();
 
   const handleUpload = async () => {
     const name = prompt('模拟上传：请输入文档名称');
     if (!name) return;
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase.from('documents').insert([
-      {
-        name,
-        source: '本地上传',
-        status: 'searchable', // Direct to searchable for demo
-        user_id: user.id
-      }
-    ]);
-
-    if (error) {
-      alert('上传失败: ' + error.message);
-    } else {
-      fetchDocuments();
+    try {
+      await addDocument(name);
+    } catch (error: any) {
+      alert('上传失败: ' + (error?.message || '未知错误'));
     }
   };
 
@@ -116,7 +80,27 @@ export default function KnowledgePage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200/70">
-            {documents.length === 0 ? (
+            {loading && documents.length === 0 ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <tr key={i} className="animate-pulse">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-5 w-5 rounded bg-slate-200" />
+                      <div className="h-4 w-32 rounded bg-slate-200" />
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-6 w-16 rounded-full bg-slate-200" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 w-12 rounded bg-slate-200" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 w-24 rounded bg-slate-200" />
+                  </td>
+                </tr>
+              ))
+            ) : documents.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-6 py-10 text-center text-slate-400">暂无文档</td>
               </tr>
@@ -150,7 +134,7 @@ export default function KnowledgePage() {
                     {doc.source}
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500">
-                    {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : '-'}
+                    {doc.created_at ? new Date(doc.created_at).toLocaleDateString() : '-'}
                   </td>
                 </tr>
               );

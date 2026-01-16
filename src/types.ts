@@ -1,18 +1,20 @@
 export interface Project {
   id: string;
+  created_at: string; // Mapped from DB
   name: string;
-  description: string;
-  last_updated: string; // Mapped from DB
-  member_count: number; // Mapped from DB
+  description: string | null;
+  updated_at: string; // Mapped from DB
+  member_count?: number; // Mapped from DB (optional/virtual)
   user_id: string;
 }
 
 export interface Document {
   id: string;
   name: string;
-  status: 'uploading' | 'processing' | 'searchable';
-  source: string;
-  upload_date: string; // Mapped from DB 
+  status: string; // Was union, but DB returns string. Ideally should be enum.
+  source?: string; // Not in DB, making optional
+  storage_path?: string; // Needed for file cleanup
+  created_at: string; // Mapped from DB 
   project_id?: string;
   user_id: string;
 }

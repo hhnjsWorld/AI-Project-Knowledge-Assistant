@@ -1,6 +1,6 @@
-import ProjectList from '@/components/projects/ProjectList';
+import ProjectListView from './_components/ProjectListView';
 import { Plus } from 'lucide-react';
-import CreateProjectDialog from '@/components/projects/CreateProjectDialog';
+import CreateProjectDialog from '../_components/projects/CreateProjectDialog';
 
 export default function ProjectsPage() {
   return (
@@ -15,7 +15,7 @@ export default function ProjectsPage() {
         <CreateProjectDialog 
           trigger={
             <button
-              className="inline-flex items-center gap-2 rounded-lg bg-[color:var(--brand)] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[color:var(--brand-dark)]"
+              className="inline-flex items-center gap-2 rounded-lg bg-[color:var(--brand)] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[color:var(--brand-strong)]"
             >
               <Plus className="h-4 w-4" />
               新建项目
@@ -24,7 +24,7 @@ export default function ProjectsPage() {
         />
       </div>
 
-      <ProjectList />
+      <ProjectListView />
     </div>
   );
 }

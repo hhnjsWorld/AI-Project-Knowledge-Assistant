@@ -1,23 +1,19 @@
 'use client';
 
-import LoginPage from '@/components/auth/LoginPage';
+import LoginForm from './_components/LoginForm';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Page() {
   const router = useRouter();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.push('/dashboard');
-      }
-    });
-  }, [router]);
-
-  // We need to modify LoginPage to accept no props or handle internal logic
-  // Since we already modified LoginPage to be self-contained in previous steps, this is fine.
+    if (!loading && user) {
+      router.replace('/dashboard');
+    }
+  }, [loading, user, router]);
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -28,7 +24,7 @@ export default function Page() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <LoginPage />
+          <LoginForm />
         </div>
       </div>
     </div>
